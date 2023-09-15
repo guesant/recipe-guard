@@ -1,0 +1,6 @@
+{
+  "name": "recipe-guard",
+  "workspaces": [
+    "packages/core"
+  ]
+}

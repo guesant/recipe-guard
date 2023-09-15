@@ -1,0 +1,35 @@
+{
+  "name": "@recipe-guard/core",
+  "version": "0.0.0",
+  "source": "./src/index.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "dependencies": {
+    "@ucast/mongo": "^2.4.3",
+    "@ucast/sql": "^1.0.0-alpha.1",
+    "zod": "^3.22.2"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.1",
+    "rimraf": "^5.0.1",
+    "typescript": "^5.2.2"
+  },
+  "scripts": {
+    "cleanup": "rimraf dist",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build": "npm run cleanup && concurrently \"npm:build:esm\" \"npm:build:cjs\"",
+    "watch:esm": "tsc -p tsconfig.esm.json --watch",
+    "watch:cjs": "tsc -p tsconfig.cjs.json --watch",
+    "dev": "concurrently \"npm:watch:esm\" \"npm:watch:cjs\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guesant/recipe-guard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/guesant/recipe-guard/issues"
+  },
+  "homepage": "https://github.com/guesant/recipe-guard#readme"
+}
