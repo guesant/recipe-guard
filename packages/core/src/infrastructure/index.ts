@@ -1,2 +1,2 @@
-export * from "./authorization-constraint-interpreter-sql";
-export * as zod from "./zod";
+export * from './authorization-constraint-interpreter-sql';
+export * from './zod';
