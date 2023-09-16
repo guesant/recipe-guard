@@ -22,7 +22,8 @@
     "build": "npm run cleanup && concurrently \"npm:build:esm\" \"npm:build:cjs\"",
     "watch:esm": "tsc -p tsconfig.esm.json --watch",
     "watch:cjs": "tsc -p tsconfig.cjs.json --watch",
-    "dev": "concurrently \"npm:watch:esm\" \"npm:watch:cjs\""
+    "dev": "concurrently \"npm:watch:esm\" \"npm:watch:cjs\"",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
