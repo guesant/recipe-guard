@@ -1,0 +1,6 @@
+export enum AuthorizationConstraintRecipeResolutionMode {
+  CASL_ONLY = "CASL_ONLY",
+  RESOLVE_AND_MERGE = "RESOLVE_AND_MERGE", // OR
+  RESOLVE_AND_EXCLUDE = "RESOLVE_AND_EXCLUDE", // NOT
+  RESOLVE_AND_INTERSECT = "RESOLVE_AND_INTERSECT", // AND
+}
