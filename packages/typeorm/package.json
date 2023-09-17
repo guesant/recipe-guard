@@ -1,0 +1,38 @@
+{
+  "name": "@recipe-guard/typeorm",
+  "version": "0.0.0",
+  "source": "./src/index.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    "import": "./dist/esm/index.js",
+    "require": "./dist/cjs/index.js"
+  },
+  "scripts": {
+    "cleanup": "rimraf dist",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build": "npm run cleanup && concurrently \"npm:build:esm\" \"npm:build:cjs\"",
+    "watch:esm": "tsc -p tsconfig.esm.json --watch",
+    "watch:cjs": "tsc -p tsconfig.cjs.json --watch",
+    "dev": "concurrently \"npm:watch:esm\" \"npm:watch:cjs\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.1",
+    "rimraf": "^5.0.1",
+    "typeorm": "^0.3.17",
+    "typescript": "^5.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guesant/recipe-guard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/guesant/recipe-guard/issues"
+  },
+  "homepage": "https://github.com/guesant/recipe-guard#readme",
+  "dependencies": {
+    "@recipe-guard/core": "file:../core"
+  }
+}

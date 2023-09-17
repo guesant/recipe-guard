@@ -2,7 +2,8 @@
   "private": true,
   "name": "recipe-guard",
   "workspaces": [
-    "packages/core"
+    "packages/core",
+    "packages/typeorm"
   ],
   "scripts": {
     "build": "lerna run build",
