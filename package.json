@@ -3,7 +3,8 @@
   "name": "recipe-guard",
   "workspaces": [
     "packages/core",
-    "packages/typeorm"
+    "packages/typeorm",
+    "packages/casl"
   ],
   "scripts": {
     "build": "lerna run build",

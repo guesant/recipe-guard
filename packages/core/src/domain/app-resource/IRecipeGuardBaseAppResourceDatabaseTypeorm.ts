@@ -1,4 +1,4 @@
-export type IRecipeGuardTypeormAppResourceDatabase<
+export type IRecipeGuardBaseAppResourceDatabaseTypeorm<
   IEntity,
   IRepository,
   IManager

@@ -1,1 +1,3 @@
+export * from "./RecipeGuardCaslAbilityCompiler";
+
 export {};

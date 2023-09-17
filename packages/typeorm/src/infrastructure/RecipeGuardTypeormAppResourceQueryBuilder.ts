@@ -4,6 +4,8 @@ import {
   AuthorizationConstraintRecipeType,
   IAuthorizationConstraintInterpreterSQLContextOptions,
   IAuthorizationConstraintRecipe,
+  IRecipeGuardAppResourceTypeorm,
+  IRecipeGuardContext,
 } from "#recipe-guard-core";
 import {
   DataSource,
@@ -12,45 +14,39 @@ import {
   Repository,
   SelectQueryBuilder,
 } from "typeorm";
-import {
-  IRecipeGuardTypeormAppResource,
-  IRecipeGuardTypeormAppResourceDatabase,
-} from "../domain";
 
 export class RecipeGuardTypeormAppResourceQueryBuilder<
   Entity extends ObjectLiteral = ObjectLiteral,
   //
-  RecipeGuardTypeormAppResourceDatabase extends IRecipeGuardTypeormAppResourceDatabase<
+  RecipeGuardAppResourceTypeorm extends IRecipeGuardAppResourceTypeorm<
     Entity,
     Repository<Entity>,
     DataSource | EntityManager
-  > = IRecipeGuardTypeormAppResourceDatabase<
+  > = IRecipeGuardAppResourceTypeorm<
     Entity,
     Repository<Entity>,
     DataSource | EntityManager
-  >,
-  //
-  RecipeGuardTypeormAppResource extends IRecipeGuardTypeormAppResource<RecipeGuardTypeormAppResourceDatabase> = IRecipeGuardTypeormAppResource<RecipeGuardTypeormAppResourceDatabase>
+  >
 > {
   constructor(
     // ...
-    private manager: DataSource | EntityManager,
+    readonly recipeGuardContext: IRecipeGuardContext<
+      IRecipeGuardAppResourceTypeorm<any, any, DataSource | EntityManager>
+    >,
 
-    private appResource: RecipeGuardTypeormAppResource,
+    private authorizationConstraintInterpreterSQLContextOptions: IAuthorizationConstraintInterpreterSQLContextOptions,
 
-    private getAppResource: (
-      key: string
-    ) => IRecipeGuardTypeormAppResource | null
+    private manager: DataSource | EntityManager
   ) {}
 
   async createActorQueryBuilderByConstraintRecipe(
-    interpreterSQLContextOptions: IAuthorizationConstraintInterpreterSQLContextOptions,
+    appResource: RecipeGuardAppResourceTypeorm,
     authorizationConstraintRecipe: IAuthorizationConstraintRecipe,
     targetEntityId: unknown | null = null,
     resourceAlias = "resource"
   ): Promise<SelectQueryBuilder<Entity>> {
     const getResourceRepository =
-      this.appResource.database.getTypeormRepositoryFactory();
+      appResource.database.getTypeormRepositoryFactory();
 
     const resourceRepository = getResourceRepository(
       this.manager
@@ -72,7 +68,9 @@ export class RecipeGuardTypeormAppResourceQueryBuilder<
       }
 
       case AuthorizationConstraintRecipeType.FILTER: {
-        const dbDialect = interpreterSQLContextOptions?.dbDialect ?? null;
+        const dbDialect =
+          this.authorizationConstraintInterpreterSQLContextOptions?.dbDialect ??
+          null;
 
         if (!dbDialect) {
           throw new TypeError(
@@ -82,7 +80,7 @@ export class RecipeGuardTypeormAppResourceQueryBuilder<
 
         const authorizationConstraintInterpreterSQL =
           new AuthorizationConstraintInterpreterSQL({
-            ...interpreterSQLContextOptions,
+            ...this.authorizationConstraintInterpreterSQLContextOptions,
 
             dbDialect: {
               ...dbDialect,
@@ -102,7 +100,9 @@ export class RecipeGuardTypeormAppResourceQueryBuilder<
         qb.select([`${interpretedConstraint.alias}.id`]);
 
         for (const join of interpretedConstraint.joins) {
-          const joinAppResource = this.getAppResource(join.resource);
+          const joinAppResource = await this.recipeGuardContext.getAppResource(
+            join.resource
+          );
 
           if (joinAppResource) {
             const joinEntity = joinAppResource?.database.getTypeormEntity();
