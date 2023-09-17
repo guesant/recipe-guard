@@ -1,12 +1,16 @@
 import {
   AuthorizationConstraintInterpreterSQL,
   AuthorizationConstraintJoinMode,
+  AuthorizationConstraintRecipeResolutionMode,
   AuthorizationConstraintRecipeType,
+  AuthorizationConstraintRecipeZod,
   IAuthorizationConstraintInterpreterSQLContextOptions,
   IAuthorizationConstraintRecipe,
   IRecipeGuardAppResourceTypeorm,
   IRecipeGuardContext,
 } from "#recipe-guard-core";
+import union from "lodash/union";
+import without from "lodash/without";
 import {
   DataSource,
   EntityManager,
@@ -39,7 +43,7 @@ export class RecipeGuardTypeormAppResourceQueryBuilder<
     private manager: DataSource | EntityManager
   ) {}
 
-  async createActorQueryBuilderByConstraintRecipe(
+  async createQueryBuilderByConstraintRecipe(
     appResource: RecipeGuardAppResourceTypeorm,
     authorizationConstraintRecipe: IAuthorizationConstraintRecipe,
     targetEntityId: unknown | null = null,
@@ -128,5 +132,92 @@ export class RecipeGuardTypeormAppResourceQueryBuilder<
         return qb;
       }
     }
+  }
+
+  async getResolvedIdsByAuthorizationConstraintRecipe<Id = unknown>(
+    appResource: RecipeGuardAppResourceTypeorm,
+    authorizationConstraintRecipeRaw: IAuthorizationConstraintRecipe,
+    targetEntityId: unknown | null = null
+  ): Promise<Id[]> {
+    const validationResult = AuthorizationConstraintRecipeZod.safeParse(
+      authorizationConstraintRecipeRaw
+    );
+
+    if (!validationResult.success) {
+      return [];
+    }
+
+    const authorizationConstraintRecipe = <IAuthorizationConstraintRecipe>(
+      validationResult.data
+    );
+
+    const qb = await this.createQueryBuilderByConstraintRecipe(
+      appResource,
+      authorizationConstraintRecipe,
+      targetEntityId
+    );
+
+    const results = await qb.getMany();
+
+    const ids = results.map((result) => result.id);
+
+    return ids;
+  }
+
+  async getResolvedIdsByAuthorizationConstraintRecipes<Id = unknown>(
+    appResource: RecipeGuardAppResourceTypeorm,
+    authorizationConstraintRecipeIterable: AsyncIterable<IAuthorizationConstraintRecipe>,
+    targetEntityId: unknown | null = null
+  ): Promise<Id[]> {
+    let allowedResources: Id[] | null = null;
+
+    for await (const authorizationConstraintRecipeRaw of authorizationConstraintRecipeIterable) {
+      const validationResult = AuthorizationConstraintRecipeZod.safeParse(
+        authorizationConstraintRecipeRaw
+      );
+
+      if (!validationResult.success) {
+        continue;
+      }
+
+      const authorizationConstraintRecipe = <IAuthorizationConstraintRecipe>(
+        validationResult.data
+      );
+
+      const constraintAllowedResources =
+        await this.getResolvedIdsByAuthorizationConstraintRecipe<Id>(
+          appResource,
+          authorizationConstraintRecipe,
+          targetEntityId
+        );
+
+      switch (authorizationConstraintRecipe.resolutionMode) {
+        case AuthorizationConstraintRecipeResolutionMode.RESOLVE_AND_MERGE: {
+          if (allowedResources === null) {
+            allowedResources = constraintAllowedResources;
+          } else {
+            allowedResources = union(
+              allowedResources,
+              constraintAllowedResources
+            );
+          }
+
+          break;
+        }
+
+        case AuthorizationConstraintRecipeResolutionMode.RESOLVE_AND_EXCLUDE: {
+          if (allowedResources !== null) {
+            allowedResources = without(
+              allowedResources,
+              ...constraintAllowedResources
+            );
+          }
+
+          break;
+        }
+      }
+    }
+
+    return allowedResources ?? [];
   }
 }

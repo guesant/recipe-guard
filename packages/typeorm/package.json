@@ -17,7 +17,8 @@
     }
   },
   "dependencies": {
-    "@recipe-guard/core": "file:../core"
+    "@recipe-guard/core": "file:../core",
+    "lodash": "^4.17.21"
   },
   "scripts": {
     "cleanup": "rimraf dist",
@@ -29,6 +30,7 @@
     "dev": "concurrently \"npm:watch:esm\" \"npm:watch:cjs\""
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.198",
     "concurrently": "^8.2.1",
     "rimraf": "^5.0.1",
     "typeorm": "^0.3.17",
