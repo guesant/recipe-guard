@@ -10,7 +10,7 @@
     "prepare": "npm run build",
     "dev": "lerna run --parallel dev"
   },
-  "dependencies": {
+  "devDependencies": {
     "lerna": "^7.3.0"
   }
 }
