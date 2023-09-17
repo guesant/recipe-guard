@@ -4,7 +4,7 @@ import {
   AuthorizationConstraintRecipeType,
   IAuthorizationConstraintInterpreterSQLContextOptions,
   IAuthorizationConstraintRecipe,
-} from "@recipe-guard/core";
+} from "#recipe-guard-core";
 import {
   DataSource,
   EntityManager,

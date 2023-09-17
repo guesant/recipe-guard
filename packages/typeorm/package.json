@@ -9,6 +9,16 @@
     "import": "./dist/esm/index.js",
     "require": "./dist/cjs/index.js"
   },
+  "imports": {
+    "#recipe-guard-core": {
+      "import": "recipe-guard/packages/core/dist/esm/index.js",
+      "require": "recipe-guard/packages/core/dist/cjs/index.js",
+      "default": "recipe-guard/packages/core"
+    }
+  },
+  "dependencies": {
+    "@recipe-guard/core": "file:../core"
+  },
   "scripts": {
     "cleanup": "rimraf dist",
     "build:esm": "tsc -p tsconfig.esm.json",
@@ -17,9 +27,6 @@
     "watch:esm": "tsc -p tsconfig.esm.json --watch",
     "watch:cjs": "tsc -p tsconfig.cjs.json --watch",
     "dev": "concurrently \"npm:watch:esm\" \"npm:watch:cjs\""
-  },
-  "dependencies": {
-    "@recipe-guard/core": "file:../core"
   },
   "devDependencies": {
     "concurrently": "^8.2.1",
