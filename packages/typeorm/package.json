@@ -18,6 +18,9 @@
     "watch:cjs": "tsc -p tsconfig.cjs.json --watch",
     "dev": "concurrently \"npm:watch:esm\" \"npm:watch:cjs\""
   },
+  "dependencies": {
+    "@recipe-guard/core": "file:../core"
+  },
   "devDependencies": {
     "concurrently": "^8.2.1",
     "rimraf": "^5.0.1",
@@ -32,9 +35,6 @@
     "url": "https://github.com/guesant/recipe-guard/issues"
   },
   "homepage": "https://github.com/guesant/recipe-guard#readme",
-  "dependencies": {
-    "@recipe-guard/core": "file:../core"
-  },
   "files": [
     "dist"
   ]
