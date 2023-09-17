@@ -1,1 +1,1 @@
-export * from "./RecipeGuardTypeormAppResourceQueryBuilder";
+export * from "./RecipeGuardTypeormCompiler";

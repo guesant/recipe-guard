@@ -19,7 +19,7 @@ import {
   SelectQueryBuilder,
 } from "typeorm";
 
-export class RecipeGuardTypeormAppResourceQueryBuilder<
+export class RecipeGuardTypeormCompiler<
   Entity extends ObjectLiteral = ObjectLiteral,
   //
   RecipeGuardAppResourceTypeorm extends IRecipeGuardAppResourceTypeorm<
