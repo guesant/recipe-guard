@@ -1,6 +1,15 @@
 {
+  "private": true,
   "name": "recipe-guard",
   "workspaces": [
     "packages/core"
-  ]
+  ],
+  "scripts": {
+    "build": "lerna run build",
+    "prepare": "npm run build",
+    "dev": "lerna run --parallel dev"
+  },
+  "dependencies": {
+    "lerna": "^7.3.0"
+  }
 }
