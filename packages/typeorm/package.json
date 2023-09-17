@@ -34,5 +34,8 @@
   "homepage": "https://github.com/guesant/recipe-guard#readme",
   "dependencies": {
     "@recipe-guard/core": "file:../core"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }

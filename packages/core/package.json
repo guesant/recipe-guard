@@ -31,5 +31,8 @@
   "bugs": {
     "url": "https://github.com/guesant/recipe-guard/issues"
   },
-  "homepage": "https://github.com/guesant/recipe-guard#readme"
+  "homepage": "https://github.com/guesant/recipe-guard#readme",
+  "files": [
+    "dist"
+  ]
 }
